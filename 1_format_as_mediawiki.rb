@@ -66,7 +66,11 @@ def cleanprint(arg)
 	retval=""
 	quote=static.split('"')
 	if quote[1]!=nil
-		retval="[[#{quote[0]}]] \"#{quote[1]}\""
+		if "OPCODE "==quote[0] #the split includes the space
+			retval="[[#{quote[0]}\"#{quote[1]}\"]]"
+		else
+			retval="[[#{quote[0]}]]\"#{quote[1]}\""
+		end
 	else
 		retval="[[#{static}]]"
 	end
@@ -130,6 +134,11 @@ end
 				if refs_link!=link_reference.last
 					print ", "
 				end
+			elsif refs_link.start_with?('OPCODE') #Format for OPCODE "AAD" style seealsos
+                                print cleanprint(refs_link)
+                                if refs_link!=link_reference.last
+                                        print ", "
+                                end
 			else
 				print cleanprint("INT #{$ginterrupt}/#{refs_link}")
                                 if refs_link!=link_reference.last
